@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>面会予約フォーム</title>
+</head>
+<body>
+  <h2>面会予約</h2>
+  <form id="reserveForm">
+    <label>入居者名: <input type="text" id="resident"></label><br>
+    <label>面会者名: <input type="text" id="visitor"></label><br>
+    <label>日付: <input type="date" id="date"></label><br>
+    <label>時間: <input type="time" id="time"></label><br>
+    <label>電話番号: <input type="tel" id="phone"></label><br>
+    <label>備考: <textarea id="note"></textarea></label><br>
+    <button type="submit">送信</button>
+  </form>
+
+  <script>
+    document.getElementById("reserveForm").addEventListener("submit", function(e) {
+      e.preventDefault(); // ページリロード防止
+
+      fetch("https://script.google.com/a/macros/ict.shimanet.ed.jp/s/AKfycbxGmPkUgSSvgG5P5chQjkRCIsRNmf7ZXq0oJO_3x21leIlV-lFQRXmUrrsOE9bj8iWg/exec", {
+        method: "POST",
+        body: JSON.stringify({
+          resident: document.getElementById("resident").value,
+          visitor: document.getElementById("visitor").value,
+          date: document.getElementById("date").value,
+          time: document.getElementById("time").value,
+          phone: document.getElementById("phone").value,
+          note: document.getElementById("note").value,
+          liffUserId: "2008012163-poQVL3Bk" // LINE連携するならここにLIFFから取ったID
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.result === "success") {
+          alert("予約を送信しました！");
+        } else {
+          alert("エラー: " + data.message);
+        }
+      })
+      .catch(err => {
+        alert("通信エラー: " + err.message);
+      });
+    });
+  </script>
+</body>
+</html>
